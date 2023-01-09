@@ -1,0 +1,7 @@
+{
+  "name": "sonrey-cafe",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue"
+}
