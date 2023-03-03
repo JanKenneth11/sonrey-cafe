@@ -1,6 +1,13 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router';
+import store from './store';
+import axios from './axios';
+
+import Moment from './mixins/MomentController.vue';
+import Toast from './mixins/ToastController.vue';
+
+import BaseLayout from './views/components/BaseLayout.vue';
 
 import { IonicVue } from '@ionic/vue';
 
@@ -20,13 +27,26 @@ import '@ionic/vue/css/text-transformation.css';
 import '@ionic/vue/css/flex-utils.css';
 import '@ionic/vue/css/display.css';
 
+// import { defineCustomElements } from '@ionic/pwa-elements/loader';
+
+
 /* Theme variables */
 import './theme/variables.css';
+import './theme/custom.css';
 
 const app = createApp(App)
-  .use(IonicVue)
-  .use(router);
-  
+    .use(IonicVue)
+    .use(router)
+    .use(store);
+
+app.config.globalProperties.$axios = axios;
+
+app.mixin(Moment);
+app.mixin(Toast);
+
+app.component('base-layout', BaseLayout);
+
 router.isReady().then(() => {
-  app.mount('#app');
+    // defineCustomElements(window)
+    app.mount('#app');
 });

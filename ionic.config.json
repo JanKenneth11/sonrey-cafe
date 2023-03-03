@@ -1,7 +1,7 @@
 {
-  "name": "sonrey-cafe",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "vue"
+    "name": "sonrey-cafe",
+    "integrations": {
+        "capacitor": {}
+    },
+    "type": "vue"
 }

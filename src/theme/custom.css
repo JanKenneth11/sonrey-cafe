@@ -1,0 +1,119 @@
+@font-face {
+    font-family: 'AbhayaLibre-Regular';
+    src: url('../assets/fonts/AbhayaLibre-Regular.ttf');
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'AbhayaLibre-Medium';
+    src: url('../assets/fonts/AbhayaLibre-Medium.ttf');
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'AbhayaLibre-SemiBold';
+    src: url('../assets/fonts/AbhayaLibre-SemiBold.ttf');
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'AbhayaLibre-Bold';
+    src: url('../assets/fonts/AbhayaLibre-Bold.ttf');
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'AbhayaLibre-ExtraBold';
+    src: url('../assets/fonts/AbhayaLibre-ExtraBold.ttf');
+    font-weight: 200;
+    font-style: normal;
+}
+
+* {
+    font-family: 'AbhayaLibre-Regular';
+}
+
+.no-ripple {
+    --ripple-color: none;
+}
+
+.no-bg {
+    --background: none;
+    background: none;
+}
+
+.primary-bg {
+    --background: #FFCA40;
+}
+
+.secondary-bg {
+    --background: #FFD27B;
+}
+
+.tertiary-bg {
+    --background: #FFE27B;
+}
+
+.back-btn {
+    --background: #FE4343;
+    --border-style: solid;
+    --border-color: #000;
+    --border-width: 1px;
+}
+
+.icon {
+    width: 2.5em;
+}
+
+.header-title-wrapper {
+    --background: #fff;
+    --border-radius: 12px;
+    border-radius: 12px;
+    box-shadow: 2px 4px 1px 0px rgb(0 0 0 / 10%);
+}
+
+.header-title-wrapper p {
+    font-family: 'AbhayaLibre-ExtraBold' !important;
+    font-size: 28px !important;
+    color: #000 !important;
+    margin: 0;
+    margin-left: 10px;
+}
+
+.ion-accordion-toggle-icon {
+    margin-right: 5px;
+}
+
+ion-accordion.accordion-expanding>[slot=header] .ion-accordion-toggle-icon,
+ion-accordion.accordion-expanded>[slot=header] .ion-accordion-toggle-icon {
+    transform: rotate(0deg) !important;
+}
+
+ion-accordion.accordion-animated>[slot=header] .ion-accordion-toggle-icon {
+    transform: rotate(-90deg);
+    --color: #000 !important;
+    color: #000 !important;
+}
+
+ion-modal {
+    --height: 60%;
+    /* --height: 50%; */
+    /* --width: 90%; */
+    --width: calc(100%/1.2);
+    /* --border-radius: 16px; */
+    --box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+ion-modal::part(backdrop) {
+    background: rgba(209, 213, 219);
+    opacity: 1;
+}
+
+ion-modal ion-toolbar {
+    --background: rgb(14 116 144);
+    --color: white;
+}
