@@ -16,7 +16,7 @@
                     <ion-col size="11">
                         <ion-list class="no-bg">
                             <ion-item class="no-bg" @click="profile">
-                                <ion-label>Edit Profile</ion-label>
+                                <ion-label>Profile</ion-label>
                             </ion-item>
                             <ion-item class="no-bg" @click="dashboard">
                                 <ion-label>Dashboard</ion-label>

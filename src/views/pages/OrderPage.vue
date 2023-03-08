@@ -12,34 +12,24 @@
                     <ion-searchbar animated="true" @ionChange="searchProduct($event)" show-clear-button="always"></ion-searchbar>
                 </ion-col>
             </ion-row>
-            <!-- <ion-row class="ion-margin-top ion-margin-start ion-margin-end">
-                <ion-col size="4">
-                    <ion-item lines="none" class="header-title-wrapper">
-                        <ion-label>1. Order</ion-label>
+            <ion-row class="ion-margin-top ion-margin-start ion-margin-end row_">
+                <ion-col v-for="(product, key) in products" :key="product.id">
+                    <ion-item lines="none" class="header-title-wrapper" @click="scrollToCategory(key)">
+                        <ion-label>{{key}}</ion-label>
                     </ion-item>
                 </ion-col>
-                <ion-col size="4">
-                    <ion-item lines="none" class="header-title-wrapper">
-                        <ion-label>2. Review</ion-label>
-                    </ion-item>
-                </ion-col>
-                <ion-col size="4">
-                    <ion-item lines="none" class="header-title-wrapper">
-                        <ion-label>3. Receipt</ion-label>
-                    </ion-item>
-                </ion-col>
-            </ion-row> -->
+            </ion-row>
         </ion-grid>
         <div v-for="(product, key) in products" :key="product.id" class="cateogries_ ion-margin-start ion-margin-end" >
-            <h1 class="category_name">{{key}}</h1>
+            <h1 class="category_name" :id="key">{{key}}</h1>
             <div class="scrolling-wrapper">
                 <div v-for="data in product" :key="data.id" class="card_ ion-text-center">
                     <ion-card>
-                        <ion-card-content>
-                            <ion-img style="pointer-events:none; max-height: 100%; height: 150px; width: 150px;" :src="splitImage(data.image)"></ion-img>
+                        <ion-card-content :class="{not_availble: !data.status}">
+                            <ion-img style="pointer-events:none; max-height: 100%; height: 150px; width: 150px;" :src="data.image ? splitImage(data.image) : 'assets/img/no_image_available.png'"></ion-img>
                             <h2>{{data.product_name}}</h2>
                             <h3>₱{{data.price}}.00</h3>
-                            <ion-button class="btn_order" @click="addOrder(data)">Order</ion-button>
+                            <ion-button :disabled="data.status == 0 ? true : false" class="btn_order" @click="addOrder(data)">Order</ion-button>
                         </ion-card-content>
                     </ion-card>
                 </div>
@@ -50,11 +40,11 @@
 
 <script>
 import BaseLayout from '../components/BaseLayout.vue'
-import {IonGrid, IonRow, IonCol, IonImg, /* IonItem, */ IonCard, IonCardContent, /* IonLabel, */ IonSearchbar, IonButton, modalController} from '@ionic/vue';
+import {IonGrid, IonRow, IonCol, IonImg, IonItem, IonCard, IonCardContent, IonLabel, IonSearchbar, IonButton, modalController} from '@ionic/vue';
 import ProductModal from '../components/ProductModal.vue';
 
 export default {
-  components: { BaseLayout, IonGrid, IonRow, IonCol, IonImg, /* IonItem, */ IonCard, IonCardContent, /* IonLabel, */ IonSearchbar, IonButton },
+  components: { BaseLayout, IonGrid, IonRow, IonCol, IonImg, IonItem, IonCard, IonCardContent, IonLabel, IonSearchbar, IonButton },
   setup() {
     const slideOpts = {
         slidesPerView: 'auto',
@@ -73,47 +63,50 @@ export default {
     products: [],
   }),
   methods: {
-    initialize($event = null) {
-        console.log($event)
-        this.$axios.get('api/product/getproducts').then((data) => {
-            this.products = data.data;
-            console.log(data.data);
-        })
-    },
-    splitImage(image) {
-        // http://sonrey-cafe.thesis-back.online/images/47.png
-        if(image){
-            var img = (image || "").split("/")
-            return "https://sonrey-cafe.thesis-back.online/images/" + img[img.length - 1]
-        }
-    },
-    searchProduct(product) {
-        this.$axios.post('api/product/searchprodapp', {name: product.detail.value}).then((data) => {
-            this.products = data.data;
-            console.log(data.data);
-        })
-    },
-    async addOrder(product) {
-        const modal = await modalController.create({
-                component: ProductModal,
-                componentProps: {
-                    product: {
-                        id: product.id,
-                        name: product.product_name,
-                        image: product.image,
-                        price: product.price
-                    },
-                    // adminInfo: this.adminInfo
-                }
-            });
-            modal.onDidDismiss().then((result) => {
-                result
-            });
-            return modal.present();
-        }
-    },
-    clear(){
-        this.initialize();
+        initialize($event = null) {
+            console.log($event)
+            this.$axios.get('/api/product/getproducts').then((data) => {
+                this.products = data.data;
+                console.log(data.data);
+            })
+        },
+        splitImage(image) {
+            if(image){
+                var img = (image || "").split("/")
+                return "https://sonrey-cafe.thesis-back.online/images/" + img[img.length - 1]
+            }
+        },
+        searchProduct(product) {
+            this.$axios.post('/api/product/searchprodapp', {name: product.detail.value}).then((data) => {
+                this.products = data.data;
+                console.log(data.data);
+            })
+        },
+        async addOrder(product) {
+            const modal = await modalController.create({
+                    component: ProductModal,
+                    componentProps: {
+                        product: {
+                            id: product.id,
+                            name: product.product_name,
+                            image: product.image,
+                            price: product.price
+                        },
+                        // adminInfo: this.adminInfo
+                    }
+                });
+                modal.onDidDismiss().then((result) => {
+                    result
+                });
+                return modal.present();
+            },
+            clear(){
+            this.initialize();
+        },
+        scrollToCategory(element) {
+            let yOffset = document.getElementById(element);
+            yOffset.scrollIntoView()
+        },
     },
 }
 </script>
@@ -166,5 +159,23 @@ ion-searchbar {
     --border-radius: 5px;
     --icon-color: #000;
     padding: 0;
+}
+.row_ {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+}
+.not_availble::before {
+    content: 'not available';
+    color: white;
+    text-align: center;
+    background: #e61c1c;
+    border-radius: 18px;
+    font-size: 18px;
+    padding: 3px 15px;
+    position: absolute;
+    left: 50%;
+    top: 7%;
+    transform: translate(-50%, 0%);
 }
 </style>

@@ -18,7 +18,7 @@ const store = createStore({
     actions: {
         async updateCartNumber({ commit }) {
             const resp = await axios.get('api/cart/getcart');
-            console.log(resp);
+            // console.log(resp);
             commit('SET_CART_NUMBER', resp.data ? resp.data.cart_detail.length : 0);
         },
         async updateUser({ commit }) {

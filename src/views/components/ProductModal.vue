@@ -2,7 +2,7 @@
     <ion-content id="product_modal" force-overscroll="false">
         <ion-grid class="ion-margin-top">
             <ion-row class="ion-justify-content-center ion-align-items-center ion-margin-bottom">
-                <ion-img class="product_modal_img" style="pointer-events:none" :src="product.image" />
+                <ion-img class="product_modal_img" style="pointer-events:none" :src="product.image ? splitImage(product.image) : 'assets/img/no_image_available.png'" />
             </ion-row>
             <ion-row class="ion-justify-content-center ion-align-items-center ion-flex-column ion-margin-bottom" style="flex-direction: column;">
                     <ion-label>{{product.name}}</ion-label>
@@ -49,13 +49,11 @@ export default {
     }),
     methods: {
         addToCart(product){
-            // console.log(product)
             this.cart = {
                 total: product.price * this.qty,
                 product_id: product.id,
                 quantity: this.qty,
             };
-            // console.log(this.cart)
             this.$axios.post('/api/cart/addtocart',this.cart).then(() => {
                 this.$store.dispatch('updateCartNumber');
                 this.successNotify('Added to cart successfully');
@@ -65,13 +63,25 @@ export default {
         closeModal() {
             return modalController.dismiss(this.product,'close');
         },
+        splitImage(image) {
+            if(image){
+                var img = (image || "").split("/")
+                return "https://sonrey-cafe.thesis-back.online/images/" + img[img.length - 1]
+            }
+        },
     },
 }
 </script>
 <style scoped>
 ion-content {
     --background: #FFEBB9;
-    
+    border: 2px solid #000;
+}
+
+ion-icon {
+    color: #000;
+    font-weight: 900;
+    font-size: 30px;
 }
 .product_modal_img {
     width: 75%;

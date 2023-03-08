@@ -9,49 +9,76 @@
                                 <th colspan="2" style="text-align: left;">Item Name</th>
                                 <th>Total Amount</th>
                             </tr>
-                            <tr>
-                                <td>Item #1</td>
-                                <td>1</td>
-                                <th rowspan="4">P 3.00</th>
-                            </tr>
-                            <tr>
-                                <td>Item #2</td>
-                                <td>1</td>
-                            </tr>
-                            <tr>
-                                <td>Item #3</td>
-                                <td>1</td>
-                            </tr>
-                            <tr>
-                                <td>Item #3</td>
-                                <td>1</td>
+                            <tr v-for="order in latestOrder.order_detail" :key="order.id">
+                                <td>{{ order.product.product_name }}</td>
+                                <td>{{ order.quantity }}</td>
+                                <th :rowspan="latestOrder.order_detail.length">P{{ latestOrder.total }}.00</th>
                             </tr>
                         </table>
+                        <ion-row>
+                            <ion-col size="6" style="display: flex; flex-direction: column;">
+                                <ion-label>Order Reference:</ion-label>
+                                <ion-label>Order Status:</ion-label>
+                                <ion-label>Gcash account:</ion-label>
+                                <ion-label>Gcash number:</ion-label>
+                            </ion-col>
+                            <ion-col size="6" style="display: flex; flex-direction: column;">
+                                <ion-label>{{ latestOrder.order_ref }}</ion-label>
+                                <ion-label :color="status_color[latestOrder.status]">{{ status[latestOrder.status] }}</ion-label>
+                                <ion-label>{{ adminInfo.gcash_name }}</ion-label>
+                                <ion-label>{{ adminInfo.gcash_number }}</ion-label>
+                            </ion-col>
+                        </ion-row>
+                        <ion-row><h5>Note: This order will be processed once transaction was paid. When sending the payment, please use the reference as message in the Gcash app.</h5></ion-row>
                     </ion-card-content>
                 </ion-card>
             </ion-row>
             <ion-row class="ion-justify-content-center ion-align-items-center" style="flex-direction:column;">
-                <ion-button class="btn_ btn_close">Close</ion-button>
+                <ion-button class="btn_ btn_close" @click="goToOrderHistory">Close</ion-button>
             </ion-row>
         </ion-grid>
     </base-layout>
 </template>
 <script>
-import {} from '@ionic/vue'
+import {IonCard, IonCardContent, IonRow, IonButton, IonGrid, IonCol, IonLabel, } from '@ionic/vue'
 import BaseLayout from '../components/BaseLayout.vue'
 export default {
-  components: { BaseLayout },
+  components: { IonCard, IonCardContent, IonRow, IonButton, IonGrid, IonCol, IonLabel, BaseLayout },
   ionViewWillEnter() {
     this.initialize();
   },
   mounted() {
     this.initialize();  
   },
+  data:() => ({
+    latestOrder: {},
+    adminInfo: {},
+    status: [
+        'Pending',
+        'Processing',
+        'Cancelled',
+        'Done'
+    ],
+    status_color: [
+        'primary',
+        'success',
+        'danger',
+        '#555550'
+    ],
+  }),
   methods: {
     initialize() {
-        this.$axios.get('api/order/getorder').then((data) => {
-            console.log(data);
+        this.$axios.get('/api/order/getorder').then((data) => {
+            this.latestOrder = data.data[0]
+            console.log(this.latestOrder)
         })
+        this.$axios.get('/api/admininfo').then((data) => {
+            this.adminInfo = data.data
+            console.log(this.adminInfo)
+        })
+    },
+    goToOrderHistory() {
+        this.$router.push('/history')
     }
   },
 }

@@ -5,7 +5,7 @@
                 <ion-row>
                     <!-- for image -->
                     <ion-col size="12" class="ion-text-center">
-                        <ion-img :src="input.profile_picture ? input.profile_picture : 'assets/img/registration-noimage.png'" @click="takePhoto"/>
+                        <ion-img :src="input.image ? input.image : 'assets/img/registration-noimage.png'" @click="takePhoto"/>
                     </ion-col>
                 </ion-row>
                 <ion-row>
@@ -24,7 +24,7 @@
                         </ion-item>
                         <ion-item class="no-bg" lines="none">
                             <ion-label position="stacked">Confirm Password:</ion-label>
-                            <ion-input v-model="input.confirm_password" type="password"></ion-input>
+                            <ion-input v-model="input.confirmpassword" type="password"></ion-input>
                         </ion-item>
                         <ion-item class="no-bg" lines="none">
                             <ion-label position="stacked">Email:</ion-label>
@@ -66,7 +66,7 @@ export default {
             name: '',
             username: '',
             password: '',
-            confirm_password: '',
+            confirmpassword: '',
             fcm_token: ''
         },
     }),
@@ -82,42 +82,28 @@ export default {
                 resultType: CameraResultType.Base64,
             });
 
-            this.input.profile_picture ="data:image/jpeg;base64," + image.base64String;
+            this.input.image ="data:image/jpeg;base64," + image.base64String;
         },
         validateEmail(email) {
             var regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             return regex.test(email)
         },
         registerAccount() {
+            if(this.input.password != this.input.confirmpassword){
+                return this.errorNotify('Password and confirm password did not match')
+            }
             this.input.fcm_token = 'createUser_' + this.input.name;
-            // if(this.input.email != '' && this.input.birth_date != '' && this.input.number != '' && this.input.name != '' && this.input.username != '' && this.input.password != '') {
-                if(this.validateEmail(this.input.email)){
-                    if(this.input.password == this.input.confirm_password) {
-                        this.$axios.post('/api/client/register',this.input).then(({data}) => {
-                            this.input = {};
-                            // console.log(this.create); 
-                            console.log(data);
-                            // if(data.data.token){
-                            //     this.successNotify('Account created successfully');
-                            //     localStorage.setItem("token", data.data.token);
-                            //     this.$router.push('/order');
-                            // }
-                        });
-                    } 
-                    else {
-                        console.log("error 1")
-                        // this.errorNotify('Password does not match');
-                    }
-                } 
-                else {
-                    console.log("error 2")
-                    // this.errorNotify('Please enter a valid email address');
-                }
-            // } 
-            // else {
-            //     console.log("error 3")
-            //     // this.errorNotify('All fields are required');
-            // }
+            this.input.birth_date = "2023-03-07"
+            this.$axios.post('/user/client/register',this.input).then(() => {
+                this.input = {};
+                    this.successNotify('Account created successfully');
+                    this.$router.push('/login');
+            }).catch(err => {
+                var errors = Object.values(err.response.data.errors)
+                // Object.values(err.response.data.errors).forEach(el => {
+                    this.errorNotify(errors[0][0])
+                // })
+            });
         }
     },
 }
@@ -128,7 +114,7 @@ ion-grid {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    width: 80%;
+    /* width: 80%; */
 }
 ion-row {
     justify-content: center;

@@ -13,44 +13,83 @@
             </ion-row>
             <ion-row class="ion-justify-content-center ion-margin-top ion-margin-start ion-margin-end">
                 <ion-col size="12" class="profile_pic_container">
-                    <ion-img src="assets/img/profile.png" class="profile_pic"/>
-                    <ion-button>Change Photo</ion-button>
+                    <ion-img :src="data.image != null || data.image != undefined ? data.image :'assets/img/profile.png'" class="profile_pic"/>
+                    <ion-button @click="takePhoto">Change Photo</ion-button>
                 </ion-col>
                 <ion-col size="12">
                     <ion-item class="user_name no-bg" lines="none">
                         <ion-label position="stacked">Name:</ion-label>
-                        <ion-input type="text" value="Juan G. Carlo"></ion-input>
+                        <ion-input v-model="data.name" type="text"></ion-input>
                     </ion-item>
                     <ion-item class="user_username no-bg" lines="none">
                         <ion-label position="stacked">Username:</ion-label>
-                        <ion-input type="text" maxLenght="11" value="admin@gmail.com"></ion-input>
+                        <ion-input v-model="data.username" type="text" maxLenght="11"></ion-input>
                     </ion-item>
                     <ion-item class="no-bg" lines="none"></ion-item>
                     <ion-item class="user_email no-bg" lines="none">
                         <ion-label position="stacked">Email:</ion-label>
-                        <ion-input type="email" value="carlo@gmail.com"></ion-input>
+                        <ion-input v-model="data.email" type="email"></ion-input>
                     </ion-item>
                     <ion-item class="user_contact no-bg" lines="none">
                         <ion-label position="stacked">Contact Number:</ion-label>
-                        <ion-input type="number" maxLenght="11" value="09125122738"></ion-input>
+                        <ion-input v-model="data.number" type="number" maxLenght="11"></ion-input>
                     </ion-item>
                     <ion-item class="user_pass no-bg" lines="none">
                         <ion-label position="stacked">Password:</ion-label>
-                        <ion-input type="password" value="Abcdefghi" style="-webkit-text-security: square;"></ion-input>
+                        <ion-input v-model="data.password" type="password" style="-webkit-text-security: square;"></ion-input>
                     </ion-item>
                 </ion-col>
             </ion-row>
             <ion-row class="ion-justify-content-center">
-                <ion-button class="btn-save">Save</ion-button>
+                <ion-button class="btn-save" @click="updateUser(data)">Save</ion-button>
             </ion-row>
         </ion-grid>
     </base-layout>
 </template>
 <script>
-import {} from '@ionic/vue';
+import {IonImg, IonItem, IonCol, IonRow, IonButton, IonLabel, IonInput, IonGrid, } from '@ionic/vue';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import BaseLayout from '../components/BaseLayout.vue';
 export default {
-  components: { BaseLayout },
+  components: { IonImg, IonItem, IonCol, IonRow, IonButton, IonLabel, IonInput, IonGrid, BaseLayout },
+  ionViewWillEnter(){
+    this.initialize()
+  },
+  mounted() {
+    this.initialize()
+  },
+  data:() => ({
+    data: {},
+  }),
+  methods: {
+    initialize(){
+        this.data = this.$store.getters.user
+        this.data.password = null
+        this.data.image = this.splitImage(this.data.image)
+        console.log(this.data)
+    },
+    splitImage(image) {
+        if(image){
+            var img = (image || "").split("/")
+            return "https://sonrey-cafe.thesis-back.online/images/" + img[img.length - 1]
+        }
+    },
+    updateUser(updatedInfo){
+        this.$axios.post('/user/client/register',updatedInfo).then((data) => {
+            console.log(data)
+        }) 
+    },
+    async takePhoto(){
+        const image = await Camera.getPhoto({
+            quality: 90,
+            allowEditing: true,
+            source: CameraSource.Camera,
+            resultType: CameraResultType.Base64,
+        });
+
+        this.data.image ="data:image/jpeg;base64," + image.base64String;
+    },
+  },
 }
 </script>
 <style scoped>

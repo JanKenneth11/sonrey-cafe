@@ -10,7 +10,7 @@
                 <ion-row>
                     <ion-col size="12">
                         <ion-item lines="none" class="ion-margin-bottom">
-                            <ion-input v-model="input.email" type="text" placeholder="Username" class="ion-no-padding"></ion-input>
+                            <ion-input v-model="input.email" type="text" placeholder="Email" class="ion-no-padding"></ion-input>
                         </ion-item>
                         <ion-item lines="none" class="ion-margin-bottom">
                             <ion-input v-model="input.password" :type="passwordStatus ? 'text' : 'password'"  placeholder="Password" class="ion-no-padding"></ion-input>
@@ -22,7 +22,7 @@
                     </ion-col>
                     <ion-col size="12">
                         <p @click="Register">Check here! , to Register</p>
-                        <p>Forget password, Click here?</p>
+                        <p @click="ForgotPass">Forget password, Click here?</p>
                     </ion-col>
                 </ion-row>
             </ion-grid>
@@ -66,10 +66,14 @@ export default {
             if (params.email != '' && params.password != '') {
                 if(this.validateEmail(params.email)){
                     this.$axios.post('/api/client/login', params).then((data) => {
-                        console.log(data.message)
-                        localStorage.setItem("token", data.data.access_token);
-                        this.successNotify('Login Successfully!')
-                        this.$router.push("/order");
+                        console.log(data)
+                            this.input.email = ''
+                            this.input.password = ''
+                            localStorage.setItem("token", data.data.access_token);
+                            this.successNotify('Login Successfully!')
+                            this.$router.push("/order");
+                    }).catch(err => {
+                        this.errorNotify(err.response.data.message)
                     });
                 } else {
                     this.errorNotify('Email is invalid');
@@ -80,7 +84,10 @@ export default {
         },
         Register() {
             this.$router.push("/register")
-        }
+        },
+        ForgotPass() {
+            this.$router.push("/forgot-password")
+        },
     },
 }
 </script>

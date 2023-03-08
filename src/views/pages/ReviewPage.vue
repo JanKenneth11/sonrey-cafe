@@ -11,27 +11,9 @@
                     </ion-item>
                 </ion-col>
             </ion-row>
-            <!-- <ion-row class="ion-margin-top ion-margin-start ion-margin-end">
-                <ion-col size="4">
-                    <ion-item lines="none" class="header-title-wrapper">
-                        <ion-label>1. Order</ion-label>
-                    </ion-item>
-                </ion-col>
-                <ion-col size="4">
-                    <ion-item lines="none" class="header-title-wrapper">
-                        <ion-label>2. Review</ion-label>
-                    </ion-item>
-                </ion-col>
-                <ion-col size="4">
-                    <ion-item lines="none" class="header-title-wrapper">
-                        <ion-label>3. Receipt</ion-label>
-                    </ion-item>
-                </ion-col>
-            </ion-row> -->
             <ion-row class="ion-margin-top ion-justify-content-center ion-align-items-center">
                 <ion-card>
                     <ion-card-content>
-
                         <table class="table-responsive">
                             <tr>
                                 <th style="border-right: 1px solid #000; padding-right: 5px;">
@@ -46,7 +28,23 @@
                                     <ion-checkbox v-model="product.to_order" @ionChange="addToTempOrder(product)"></ion-checkbox>
                                 </td>
                                 <td colspan="2">{{product.product.product_name}}</td>
-                                <td class="ion-text-right ion-margin-end">{{product.quantity}}</td>
+                                <td class="ion-text-right ion-margin-end" style="padding: 0;">
+                                    <ion-row class="ion-align-items-center ion-justify-content-between">
+                                        <ion-col size="3" class="ion-no-padding">
+                                            <ion-button class="ion-no-padding no-ripple btn_" @click="product.quantity > 1 ? updateProductQuantity('minus', product) : deleteProduct(product) ">
+                                                <ion-icon slot="icon-only" :icon="remove"></ion-icon>
+                                            </ion-button>
+                                        </ion-col>
+                                        <ion-col size="3" class="ion-no-padding">
+                                            <ion-label>{{product.quantity}}</ion-label>
+                                        </ion-col>
+                                        <ion-col size="3" class="ion-no-padding">
+                                            <ion-button class="ion-no-padding no-ripple btn_" @click="updateProductQuantity('add', product)">
+                                                <ion-icon slot="icon-only" :icon="add"></ion-icon>
+                                            </ion-button>
+                                        </ion-col>
+                                    </ion-row>
+                                </td>
                                 <td class="ion-text-center">{{product.total}}.00</td>
                             </tr>
                             <tr>
@@ -63,18 +61,19 @@
                     <ion-button class="back-btn_" expand="block">Back</ion-button>
                 </ion-col>
                 <ion-col size="6">
-                    <ion-button class="ok-btn" expand="block" :disabled="temp_orders.length ? false : true" @click="addOrder">Ok</ion-button>
+                    <ion-button class="ok-btn" expand="block" :disabled="temp_orders.length ? false : true" @click="orderConfirmation">Ok</ion-button>
                 </ion-col>
             </ion-row>
         </ion-grid>
     </base-layout>
 </template>
 <script>
-import {IonGrid, IonRow, IonCol, IonItem, IonImg, IonButton, IonCard, IonCardContent, IonCheckbox,} from '@ionic/vue'
+import {IonGrid, IonRow, IonCol, IonItem, IonImg, IonButton, IonCard, IonCardContent, IonCheckbox, IonIcon, IonLabel, alertController} from '@ionic/vue'
+import {close, add, remove} from 'ionicons/icons'
 import BaseLayout from '../components/BaseLayout.vue'
 export default {
     components: {
-        IonGrid, IonRow, IonCol, IonItem, IonImg, IonButton, IonCard, IonCardContent, IonCheckbox,
+        IonGrid, IonRow, IonCol, IonItem, IonImg, IonButton, IonCard, IonCardContent, IonCheckbox, IonIcon, IonLabel,
         BaseLayout
     },
     ionViewDidEnter() {
@@ -83,9 +82,18 @@ export default {
     mounted() {
         this.initialize()
     },
+    computed : {
+        cart_number () {
+            return this.$store.getters.cart_number
+        }
+    },
     data:() => ({
+        close,
+        add,
+        remove,
         temp_orders: [],
         products: {},
+        adminInfo: {},
         cart_details: [],
         to_order: false,
         allSelected: false,
@@ -95,24 +103,62 @@ export default {
     }),
     methods: {
         initialize() {
-            this.$axios.get('api/cart/getcart').then((data) => {
+            this.$axios.get('/api/cart/getcart').then((data) => {
                 this.products = data.data.cart_detail
                 this.cart_details = data.data
                 console.log(data.data)
             })
+            this.$axios.get('/api/admininfo').then(({data})=> {
+            this.adminInfo = data;
+            this.adminInfo.ref = this.generateReferenceID(10);
+            // console.log(this.adminInfo)
+            });
         },
-        addOrder() {
-            this.data = {
-                order_ref: this.generateReferenceID(10),
-                cart_total: this.total,
-                cart_id: this.cart_details.id,
-                cart_order: this.temp_orders
-            }
-            this.$axios.post('api/order/addorder', this.data).then(() => {
+        orderConfirmation(){
+            const thiss = this
+            return alertController
+            .create({
+            header: 'Payment Method',
+            subHeader: `This order will be valid after payment was recieved by the admin. This is also a noncancellable order`,
+            message: `
+                <span>Payment will be only made via Gcash app by entering the following:</span>
+                <ul>
+                    <li><strong>Gcash Account</strong>: `+ (thiss.adminInfo.gcash_name ?  thiss.adminInfo.gcash_name : 'admin')+`</li>
+                    <li><strong>Gcash Number</strong>: `+thiss.adminInfo.gcash_number+`</li>
+                    <li><strong>Order Reference</strong>: `+thiss.adminInfo.ref+`</li>
+                </ul>
+                <span>Note: When sending the payment, please use the reference as message in the Gcash app.</span>
+                <br>
+                <br>
+                <span>For more concern please call 
+                Mobile no.:
+                <br>
+                `+ thiss.adminInfo.contact_number +`
+            `,
+            buttons: [
+                {
+                    text: 'OK',
+                    handler: () => {
+                        
+                        this.data = {
+                            order_ref: thiss.adminInfo.ref,
+                            cart_total: this.total,
+                            cart_id: this.cart_details.id,
+                            cart_order: this.temp_orders
+                        }
+                        this.addOrder(thiss.data);
+                    },
+                }
+            ],
+            })
+            .then(a => a.present())
+        },
+        addOrder(order_details) {
+            this.$axios.post('/api/order/addorder', order_details).then(() => {
                 this.temp_orders = [];
                 this.total = 0;
                 this.initialize();
-                this.selectAll = false;
+                this.allSelected = false;
                 this.$router.push('/receipt')
                 this.successNotify("Order created. Waiting for payment");
             })
@@ -146,12 +192,6 @@ export default {
                 this.indeterminated = false;
                 this.allSelected = false;
             }
-            console.log(cart);
-            console.log(this.temp_orders);
-            console.log(this.cnt);
-            console.log(this.indeterminated);
-            console.log(this.allSelected);
-
         },
         generateReferenceID(length) {
             var result = [];
@@ -168,6 +208,44 @@ export default {
                     product.to_order = this.allSelected;
                 });
             });
+        },
+        deleteProduct(product) {
+            console.log(product)
+            var data = {
+                cart_id: product.cart_id,
+                product_id: product.product_id,
+                total: product.total
+            }
+            this.$axios.post('/api/cart_detail/deleteproduct', data).then(() => {
+                this.successNotify('Product deleted')
+                this.initialize()
+            })
+        },
+        updateProductQuantity(type, item) {
+            var data = {};
+            if (type == 'add') {
+                data = {
+                    cart_id: item.cart_id,
+                    old_total: item.total,
+                    price: item.product.price,
+                    product_id: item.product_id,
+                    quantity: item.quantity + 1,
+                    total: item.product.price * (item.quantity + 1),
+                }
+            } else {
+                data = {
+                    cart_id: item.cart_id,
+                    old_total: item.total,
+                    price: item.product.price,
+                    product_id: item.product_id,
+                    quantity: item.quantity - 1,
+                    total: item.product.price * (item.quantity - 1),
+                }
+            }
+            this.$axios.post('/api/cart_detail/updatecart', data).then(() => {
+                this.successNotify('Product quantity updated')
+                this.initialize()
+            })
         }
     },
 }
@@ -218,6 +296,16 @@ th {
 }
 th:last-of-type {
     text-transform: capitalize;
+}
+.btn_ {
+    font-size: 10px;
+    --background: transparent;
+    --box-shadow: 0;
+    color: #000;
+    --background-focused-opacity: 0;
+    --background-hover-opacity: 0;
+    --margin-end: 0;
+    --margin-top: 0;
 }
 
 .back-btn_ {

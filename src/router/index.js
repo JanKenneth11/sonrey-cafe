@@ -4,6 +4,9 @@ import store from '../store';
 
 import LoginPage from '../views/pages/LoginPage.vue';
 import RegistrationPage from '../views/pages/RegistrationPage.vue';
+import ForgotPassword from '../views/pages/ForgotPassword.vue';
+import NewPassword from '../views/pages/NewPassword.vue';
+
 import MainPage from '../views/pages/MainPage.vue';
 import ProfilePage from '../views/pages/ProfilePage.vue';
 import OrderPage from '../views/pages/OrderPage.vue';
@@ -28,6 +31,22 @@ const routes = [{
         path: '/register',
         name: 'register',
         component: RegistrationPage,
+        meta: {
+            requiresAuth: false,
+        },
+    },
+    {
+        path: '/forgot-password',
+        name: 'forgot-password',
+        component: ForgotPassword,
+        meta: {
+            requiresAuth: false,
+        },
+    },
+    {
+        path: '/new-password',
+        name: 'new-password',
+        component: NewPassword,
         meta: {
             requiresAuth: false,
         },
@@ -111,13 +130,16 @@ router.beforeEach(async(to, from, next) => {
     if (!requiresAuth && user) {
         console.log('not require auth but there is user')
             // console.log(from.fullPath == '/' || from.fullPath == '' ? '/main' : from)
-        next(from.fullPath == '/' || from.fullPath == '' ? '/dashboard' : from)
+        next(from.fullPath == '/' || from.fullPath == '' ? '/order' : from)
     } else if (requiresAuth && !user) {
         console.log('require auth there is no user')
         next('/login');
     } else {
         console.log('next')
         next();
+    }
+    if (user) {
+        store.dispatch('updateCartNumber');
     }
 
 })

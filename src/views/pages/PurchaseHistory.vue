@@ -12,65 +12,98 @@
                 </ion-col>
             </ion-row>
             <ion-row class="ion-margin-top ion-margin-start ion-margin-end ion-justify-content-center ion-align-items-center">
-                <ion-accordion-group>
-                    <ion-accordion toggle-icon-slot="start" class="ion-margin-bottom">
-                        <ion-item slot="header">Rf. ID: ABC123DE45</ion-item>
-                        <div slot="content" class="acc_content">
-                            <table>
-                                <tr>
-                                    <th colspan="2" class="ion-text-left">Items</th>
-                                    <th style="border-right: 1px solid #000;"></th>
-                                    <th class="ion-text-center">Total</th>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">Tesst</td>
-                                    <td class="ion-text-right ion-margin-end">1</td>
-                                    <td class="ion-text-center">1.00</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2"></td>
-                                    <td class="ion-text-right" style="border-right: 1px solid #000;">Total Amount</td>
-                                    <td class="ion-text-center">1.00</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </ion-accordion>
-                    <ion-accordion toggle-icon-slot="start" class="ion-margin-bottom">
-                        <ion-item slot="header">Rf. ID: ABC123DE45</ion-item>
-                        <div slot="content" class="acc_content">
-                            <table>
-                                <tr>
-                                    <th colspan="2" class="ion-text-left">Items</th>
-                                    <th style="border-right: 1px solid #000;"></th>
-                                    <th class="ion-text-center">Total</th>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">Tesst</td>
-                                    <td class="ion-text-right ion-margin-end">1</td>
-                                    <td class="ion-text-center">1.00</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2"></td>
-                                    <td class="ion-text-right" style="border-right: 1px solid #000;">Total Amount</td>
-                                    <td class="ion-text-center">1.00</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </ion-accordion>
-                </ion-accordion-group>
+                <ion-col size="12">
+                    <ion-accordion-group v-for="order in orders" :key="order.id">
+                        <ion-accordion toggle-icon-slot="start" class="ion-margin-bottom">
+                            <ion-item slot="header">Rf. ID: {{order.order_ref}}</ion-item>
+                            <div slot="content" class="acc_content">
+                                <table style="border-bottom: 1px solid #000;">
+                                    <tr>
+                                        <th colspan="2" class="ion-text-left">Items</th>
+                                        <th style="border-right: 1px solid #000;"></th>
+                                        <th class="ion-text-center">Total</th>
+                                    </tr>
+                                    <tr v-for="item in order.order_detail" :key="item.id">
+                                        <td colspan="2">{{item.product.product_name}}</td>
+                                        <td class="ion-text-right ion-margin-end">{{item.quantity}}</td>
+                                        <td class="ion-text-center">{{ item.total }}.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"></td>
+                                        <td class="ion-text-right" style="border-right: 1px solid #000;">Total Amount</td>
+                                        <td class="ion-text-center">{{ order.total }}.00</td>
+                                    </tr>
+                                </table>
+                                <ion-row>
+                                    <ion-col size="6"><ion-label>Order status:</ion-label></ion-col>
+                                    <ion-col size="6"><ion-label :color="status_color[order.status]">{{ status[order.status] }}</ion-label></ion-col>
+                                    <ion-col size="6"><ion-label>Order date:</ion-label></ion-col>
+                                    <ion-col size="6"><ion-label>{{ convertDate(order.created_at) }}</ion-label></ion-col>
+                                </ion-row>
+                                <ion-row v-if="order.status == 0">
+                                    <ion-button color="danger" expand="block" style="width:100%;" @click="cancelOrder(order.id)">Cancel Order</ion-button>
+                                </ion-row>
+                            </div>
+                        </ion-accordion>
+                    </ion-accordion-group>
+                </ion-col>
             </ion-row>
         </ion-grid>
     </base-layout>
 </template>
 <script>
 import BaseLayout from '../components/BaseLayout.vue'
+
+import {IonGrid, IonRow, IonCol, IonItem, IonImg, IonLabel, IonButton, IonAccordionGroup, IonAccordion} from '@ionic/vue'
 export default {
-  components: { BaseLayout },
+  components: { IonGrid, IonRow, IonCol, IonItem, IonImg, IonLabel, IonButton, IonAccordionGroup, IonAccordion, BaseLayout },
+  data:() => ({
+    orders: {},
+    status: [
+        'Pending',
+        'Processing',
+        'Cancelled',
+        'Done'
+    ],
+    status_color: [
+        'primary',
+        'success',
+        'danger',
+        '#555550'
+    ],
+  }),
+  ionViewWillEnter() {
+    this.initialize()
+  },
+  mounted() {
+    this.initialize()  
+  },
+  methods: {
+    initialize(){
+        this.$axios.get('/api/order/getorder').then((data) => {
+            this.orders = data.data
+            console.log(this.orders)
+        })
+    },
+    cancelOrder(id){
+        var data = {
+            id: id,
+            status: 2
+        }
+        this.$axios.post('/api/order/update_status',data).then(() => {
+            this.successNotify('Order has been cancelled')
+            this.initialize()
+        })
+    }
+  },
 }
 </script>
 <style scoped>
 
 table {
+    width: 100%;
+}
+ion-accordion-group {
     width: 100%;
 }
 ion-accordion {
@@ -85,7 +118,7 @@ ion-accordion ion-item {
     --color: #000;
     --border-radius: 10px;
     font-family: 'AbhayaLibre-ExtraBold';
-    font-size: 32px;
+    font-size: 24px;
 }
 .acc_content {
     margin: 16px;
