@@ -58,7 +58,7 @@
             </ion-row>
             <ion-row class="ion-justify-content-center ion-margin-start ion-margin-end">
                 <ion-col size="6">
-                    <ion-button class="back-btn_" expand="block">Back</ion-button>
+                    <ion-button class="back-btn_" expand="block" @click="gotoOrder">Back</ion-button>
                 </ion-col>
                 <ion-col size="6">
                     <ion-button class="ok-btn" expand="block" :disabled="temp_orders.length ? false : true" @click="orderConfirmation">Ok</ion-button>
@@ -246,6 +246,9 @@ export default {
                 this.successNotify('Product quantity updated')
                 this.initialize()
             })
+        },
+        gotoOrder() {
+            this.$router.push('/order')
         }
     },
 }
