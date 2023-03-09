@@ -13,7 +13,10 @@
             </ion-row>
             <ion-row class="ion-justify-content-center ion-margin-top ion-margin-start ion-margin-end">
                 <ion-col size="12" class="profile_pic_container">
-                    <ion-img :src="data.image != null || data.image != undefined ? data.image :'assets/img/profile.png'" class="profile_pic"/>
+                    <!-- <ion-img :src="data.image != null || data.image != undefined ? data.image :'assets/img/profile.png'" id="profile_pic" class="profile_pic" style="border:solid"/> -->
+                    <div  class="profile_pic" id="profile_pic">
+                        <img :src="data.image != null || data.image != undefined ? data.image :'assets/img/empty_person.png'"  width="150" height="150">
+                    </div>
                     <ion-button @click="takePhoto">Change Photo</ion-button>
                 </ion-col>
                 <ion-col size="12">
@@ -104,10 +107,12 @@ ion-label {
     align-items: center;
     gap: 20px;
 }
-ion-img.profile_pic {
+/* ion-img.profile_pic { */
+.profile_pic {
     background: white;
     border-radius: 150px;
-    padding: 40px;
+    height: 230px;
+    width: 230px;
 }
 /* ion-button {
     font-family: 'AbhayaLibre-ExtraBold';
@@ -165,5 +170,13 @@ ion-row:last-child {
     height: 55px;
     width: 50%;
     font-size: 26px;
+}
+</style>
+
+<style>
+#profile_pic img{
+    height: 100% !important;
+    width: 100% !important;
+    border-radius: 150px !important;
 }
 </style>

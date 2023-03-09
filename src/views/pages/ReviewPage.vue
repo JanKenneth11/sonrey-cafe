@@ -19,9 +19,9 @@
                                 <th style="border-right: 1px solid #000; padding-right: 5px;">
                                     <ion-checkbox v-model="allSelected" :indeterminate="indeterminated" @click="selectAll()"></ion-checkbox>
                                 </th>
-                                <th colspan="2" class="ion-text-left">Items</th>
+                                <th colspan="2" class="ion-text-left"><h2 id="label" style="text-align: center">Items</h2></th>
                                 <th style="border-right: 1px solid #000;"></th>
-                                <th class="ion-text-center">Total</th>
+                                <th class="ion-text-center"><h2 id="label">Total</h2></th>
                             </tr>
                             <tr v-for="product in products" :key="product.id">
                                 <td style="border-right: 1px solid #000; padding-right: 5px;">
@@ -49,8 +49,8 @@
                             </tr>
                             <tr>
                                 <td></td>
-                                <td colspan="3" class="ion-text-center" style="border-right: 1px solid #000;">Total Amount</td>
-                                <td class="ion-text-center">{{ total }}.00</td>
+                                <td colspan="3" class="ion-text-center" style="border-right: 1px solid #000;"><h2 id="label">Total Amount</h2></td>
+                                <td class="ion-text-center"><h2 id="label">{{ total }}.00</h2></td>
                             </tr>
                         </table>
                     </ion-card-content>
@@ -332,5 +332,8 @@ th:last-of-type {
 }
 ion-row:last-child {
     
+}
+.total-wrapper *, #label{
+    font-size: 22px;
 }
 </style>

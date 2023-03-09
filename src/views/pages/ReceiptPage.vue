@@ -4,17 +4,22 @@
             <ion-row class="ion-justify-content-center ion-align-items-center">
                 <ion-card>
                     <ion-card-content>
-                        <table style="width: 100%;">
+                        <table style="width: 100%;" id="table-wrapper-reciept">
                             <tr>
-                                <th colspan="2" style="text-align: left;">Item Name</th>
-                                <th>Total Amount</th>
+                                <th colspan="2" style="text-align: left;"> <h2 id="label">Item Name</h2></th>
+                                <th><h2 id="label">Total Amount</h2></th>
                             </tr>
                             <tr v-for="order in latestOrder.order_detail" :key="order.id">
-                                <td>{{ order.product.product_name }}</td>
-                                <td>{{ order.quantity }}</td>
-                                <th :rowspan="latestOrder.order_detail.length">P{{ latestOrder.total }}.00</th>
+                                <td><h2 id="label">{{ order.product.product_name }}</h2></td>
+                                <td><h2 id="label">{{ order.quantity }}</h2></td>
+                                <th :rowspan="latestOrder.order_detail.length"><h2 id="label">₱ {{ latestOrder.total }}.00</h2></th>
                             </tr>
                         </table>
+                        <div class="total-wrapper">
+                            <h2>Totals:</h2>
+                            <h2>₱ {{latestOrder.total}}.00</h2>
+                        </div>
+                        <hr>
                         <ion-row>
                             <ion-col size="6" style="display: flex; flex-direction: column;">
                                 <ion-label>Order Reference:</ion-label>
@@ -86,6 +91,7 @@ export default {
 <style scoped>
 ion-label {
     --color: #000 !important;
+    font-size: 15px;
 }
 ion-card {
     --background: #fff;
@@ -129,5 +135,16 @@ tr:last-child {
     --border-radius: 30px;
     height: 45px;
     width: 50%;
+
+}
+.total-wrapper{
+    display: flex;
+    gap: 117px;
+}
+.total-wrapper *, #label{
+    font-size: 22px;
+}
+.th{
+    font-size: 20px;
 }
 </style>

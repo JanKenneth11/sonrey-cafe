@@ -18,7 +18,7 @@
                         <ion-button @click="sendVerificationCode(input)">Send code</ion-button>
                     </ion-col>
                     <ion-col size="11" class="ion-text-center">
-                        <p @click="logIn">Check here! , to Login</p>
+                        <p @click="logIn"><b style="color:blue">Click here!</b> to Login</p>
                     </ion-col>
                 </ion-row>
             </ion-grid>

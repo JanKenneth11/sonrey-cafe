@@ -22,6 +22,10 @@
                             <ion-input type="text" class="ion-margin-top" v-model="input.suggestion"></ion-input>
                         </ion-item>
                         <ion-item lines="none">
+                            <ion-label position="stacked" text-wrap>Problems encounter using the sonrey app?</ion-label>
+                            <ion-input type="text" class="ion-margin-top" v-model="input.prob_encounter"></ion-input>
+                        </ion-item>
+                        <ion-item lines="none">
                             <ion-label position="stacked" text-wrap>What do you rate about this app?</ion-label>
                             <ion-radio-group v-model="input.rate" style="width: 100%;">
                                 <ion-item lines="none">
@@ -61,7 +65,9 @@ import {IonImg, IonItem, IonCol, IonButton, IonRow, IonLabel, IonInput, IonList,
 export default {
   components: { IonImg, IonItem, IonCol, IonButton, IonRow, IonLabel, IonInput, IonList, IonGrid, IonRadioGroup, IonRadio, BaseLayout },
   data:() => ({
-    input: {},
+    input: {
+        rate: "1"
+    },
   }),
   methods: {
     sendFeedback(feedback){
