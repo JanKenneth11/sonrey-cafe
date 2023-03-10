@@ -12,7 +12,7 @@
                             <tr v-for="order in latestOrder.order_detail" :key="order.id">
                                 <td><h2 id="label">{{ order.product.product_name }}</h2></td>
                                 <td><h2 id="label">{{ order.quantity }}</h2></td>
-                                <th :rowspan="latestOrder.order_detail.length"><h2 id="label">₱ {{ latestOrder.total }}.00</h2></th>
+                                <th><h2 id="label">₱ {{ latestOrder.total }}.00</h2></th>
                             </tr>
                         </table>
                         <div class="total-wrapper">

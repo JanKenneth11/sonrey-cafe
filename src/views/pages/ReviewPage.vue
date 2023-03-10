@@ -29,7 +29,7 @@
                                 </td>
                                 <td colspan="2">{{product.product.product_name}}</td>
                                 <td class="ion-text-right ion-margin-end" style="padding: 0;">
-                                    <ion-row class="ion-align-items-center ion-justify-content-between">
+                                    <ion-row class="ion-align-items-center ion-justify-content-between" style="margin-right: 10px;">
                                         <ion-col size="3" class="ion-no-padding">
                                             <ion-button class="ion-no-padding no-ripple btn_" @click="product.quantity > 1 ? updateProductQuantity('minus', product) : deleteProduct(product) ">
                                                 <ion-icon slot="icon-only" :icon="remove"></ion-icon>
