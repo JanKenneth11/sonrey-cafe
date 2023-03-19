@@ -4,10 +4,17 @@
             <ion-row class="ion-justify-content-center ion-align-items-center">
                 <ion-col size="11" class="header">
                     <ion-item lines="none" class="header-title-wrapper no-bg">
-                        <ion-img slot="start" src="assets/img/calendar-icon.png" class="ion-no-margin icon"/>
-                        <p>
-                            Purchase History
-                        </p>
+                        <div  style="display:flex ; width: 100%; justify-content: space-between">
+                            <div class="d-flex" style="display:flex;align-items: center;">
+                                <ion-img slot="start" src="assets/img/calendar-icon.png" class="ion-no-margin icon" id="title-logo"/>
+                                <p>
+                                    Purchase History
+                                </p>
+                            </div>
+                            <ion-button class="ion-no-padding no-ripple btn_" @click="showInfo()">
+                                <ion-icon slot="icon-only" :icon="information"></ion-icon>
+                            </ion-button>
+                        </div>
                     </ion-item>
                 </ion-col>
             </ion-row>
@@ -54,11 +61,14 @@
 <script>
 import BaseLayout from '../components/BaseLayout.vue'
 
-import {IonGrid, IonRow, IonCol, IonItem, IonImg, IonLabel, IonButton, IonAccordionGroup, IonAccordion} from '@ionic/vue'
+import {IonGrid, IonRow, IonCol, IonItem, IonImg, IonLabel, IonButton, IonAccordionGroup, IonAccordion, alertController} from '@ionic/vue'
+import {information} from 'ionicons/icons'
 export default {
   components: { IonGrid, IonRow, IonCol, IonItem, IonImg, IonLabel, IonButton, IonAccordionGroup, IonAccordion, BaseLayout },
   data:() => ({
+    information,
     orders: {},
+    adminInfo: {},
     status: [
         'Pending',
         'Processing',
@@ -77,13 +87,46 @@ export default {
   },
   mounted() {
     this.initialize()  
+    this.adminInformation()  
   },
   methods: {
+    
     initialize(){
         this.$axios.get('/api/order/getorder').then((data) => {
             this.orders = data.data
             console.log(this.orders)
         })
+    },
+    adminInformation(){
+        this.$axios.get('/api/admininfo').then(({data})=> {
+            this.adminInfo = data;
+             });
+    },
+    showInfo(){
+        const thiss = this
+        return alertController
+        .create({
+        message: `
+            <span>Note:</span>
+            <br>
+            <span>- When sending the payment, please use the reference as message in the Gcash app.</span>
+            <br>
+            <span>- No deliveries yet, but you can pick up your order on the Sonrey Cafe just present your RF. ID or receipt at the cashier and you can get your order.</span>
+            <br>
+            <br>
+            <span>For more concern please call 
+            Mobile no.:
+            <br>
+            `+ thiss.adminInfo.contact_number +`
+        `,
+        buttons: [
+            {
+                text: 'OK',
+                handler: () => {},
+            }
+        ],
+        })
+        .then(a => a.present())
     },
     cancelOrder(id){
         var data = {
@@ -155,5 +198,20 @@ th {
 }
 th:last-of-type {
     text-transform: capitalize;
+}
+
+.btn_{
+    margin-left: 15px;
+}
+
+#title-logo{
+    width: 23px;
+}
+</style>
+
+<style>
+.btn_{
+    --background: #ffca40;
+    --color: #000;
 }
 </style>

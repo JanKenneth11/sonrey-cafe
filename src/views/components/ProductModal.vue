@@ -1,9 +1,13 @@
 <template>
     <ion-content id="product_modal" force-overscroll="false">
         <ion-grid class="ion-margin-top">
-            <ion-row class="ion-justify-content-center ion-align-items-center ion-margin-bottom">
+            <!-- <ion-row class="ion-justify-content-center ion-align-items-center ion-margin-bottom">
                 <ion-img class="product_modal_img" style="pointer-events:none" :src="product.image ? splitImage(product.image) : 'assets/img/no_image_available.png'" />
+            </ion-row> -->
+            <ion-row class="ion-justify-content-center ion-align-items-center ion-margin-bottom">
+                <img class="product_modal_img" style="pointer-events:none" :src="product.image ? splitImage(product.image) : 'assets/img/no_image_available.png'" />
             </ion-row>
+
             <ion-row class="ion-justify-content-center ion-align-items-center ion-flex-column ion-margin-bottom" style="flex-direction: column;">
                     <ion-label>{{product.name}}</ion-label>
                     <ion-label>₱{{product.price}}.00</ion-label>
@@ -29,11 +33,11 @@
     </ion-content>
 </template>
 <script>
-import {IonContent, IonGrid, IonRow, IonImg, IonLabel, IonCol, IonIcon, IonButton, modalController} from '@ionic/vue';
+import {IonContent, IonGrid, IonRow, /* IonImg */ IonLabel, IonCol, IonIcon, IonButton, modalController} from '@ionic/vue';
 import { arrowUndoSharp, removeSharp, addSharp } from "ionicons/icons";
 export default {
     components: {
-        IonContent, IonGrid, IonRow, IonImg, IonLabel, IonCol, IonIcon, IonButton
+        IonContent, IonGrid, IonRow, /* IonImg */ IonLabel, IonCol, IonIcon, IonButton
     },
     props: {
         product: {
@@ -84,7 +88,11 @@ ion-icon {
     font-size: 30px;
 }
 .product_modal_img {
-    width: 75%;
+    /* width: 75%; */
+    width: 200px;
+    height: auto;
+    max-width: 200px;
+    max-height: 200px;
 }
 ion-img.product_modal_img::part(image) {
   border-radius: 10px;

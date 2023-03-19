@@ -21,8 +21,8 @@
                         <ion-button @click="Login(input)">Log In</ion-button>
                     </ion-col>
                     <ion-col size="12">
-                        <p @click="Register"><b style="color:blue">Click here!</b> to Register</p>
-                        <p @click="ForgotPass">Forgot password ?  <b style="color:blue">Click here!</b></p>
+                        <p @click="Register"><b style="text-decoration: underline;">Click here!</b> to Register</p>
+                        <p @click="ForgotPass">Forgot password ?  <b style="text-decoration: underline;">Click here!</b></p>
                     </ion-col>
                 </ion-row>
             </ion-grid>

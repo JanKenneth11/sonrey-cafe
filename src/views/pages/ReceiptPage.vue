@@ -12,7 +12,7 @@
                             <tr v-for="order in latestOrder.order_detail" :key="order.id">
                                 <td><h2 id="label">{{ order.product.product_name }}</h2></td>
                                 <td><h2 id="label">{{ order.quantity }}</h2></td>
-                                <th><h2 id="label">₱ {{ latestOrder.total }}.00</h2></th>
+                                <th><h2 id="label">₱ {{ order.total }}.00</h2></th>
                             </tr>
                         </table>
                         <div class="total-wrapper">
@@ -34,7 +34,11 @@
                                 <ion-label>{{ adminInfo.gcash_number }}</ion-label>
                             </ion-col>
                         </ion-row>
-                        <ion-row><h5>Note: This order will be processed once transaction was paid. When sending the payment, please use the reference as message in the Gcash app.</h5></ion-row>
+                        <ion-row>
+                            <h5>Note:</h5>
+                            <h5> - This order will be processed once transaction was paid. When sending the payment, please use the reference as message in the Gcash app.</h5>
+                            <h5> - No deliveries yet, but you can pick up your order on the Sonrey Cafe just present your RF. ID or receipt at the cashier and you can get your order.</h5>
+                        </ion-row>
                     </ion-card-content>
                 </ion-card>
             </ion-row>

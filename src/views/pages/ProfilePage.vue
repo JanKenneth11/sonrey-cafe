@@ -178,5 +178,6 @@ ion-row:last-child {
     height: 100% !important;
     width: 100% !important;
     border-radius: 150px !important;
+    object-fit: fill;
 }
 </style>

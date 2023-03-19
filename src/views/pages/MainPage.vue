@@ -7,8 +7,8 @@
                         <ion-slide v-for="announcement in announcements" :key="announcement.id">
                             <ion-card :href="announcement.link">
                                 <ion-card-content>
-                                    <ion-img :src="splitImage(announcement.image)"></ion-img>
-                                    <div><h1>{{ announcement.tittle }}</h1></div>
+                                        <img :src="splitImage(announcement.image)" id="img-wrapper">
+                                        <div><h1 id="tittle-announce">{{ announcement.tittle }}</h1></div>
                                 </ion-card-content>
                             </ion-card>
                         </ion-slide>
@@ -176,8 +176,13 @@ ion-slide {
 }
 ion-slide ion-img {
     width: 100%;
-    height: 250px;
+    height: 200px;
 }
+#img-wrapper {
+    width: 100%;
+    height: 200px;
+}
+
 
 ion-slide div {
     position: absolute;
@@ -186,5 +191,14 @@ ion-slide div {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+#tittle-announce{
+    color: #fff;
+}
+</style>
+
+<style>
+ion-img img{
+    object-fit: cover !important;
 }
 </style>
