@@ -79,6 +79,7 @@ export default {
     },
     updateUser(updatedInfo){
         this.$axios.post('/user/client/register',updatedInfo).then((data) => {
+            this.successNotify('Update info successfully!')
             console.log(data)
         }) 
     },

@@ -2,7 +2,7 @@
     <base-layout>
     <ion-grid class="ion-margin-top">
             <ion-row class="ion-justify-content-center ion-align-items-center">
-                <ion-card>
+                <ion-card id="table-print">
                     <ion-card-content>
                         <table style="width: 100%;" id="table-wrapper-reciept">
                             <tr>
@@ -43,6 +43,7 @@
                 </ion-card>
             </ion-row>
             <ion-row class="ion-justify-content-center ion-align-items-center" style="flex-direction:column;">
+                <ion-button class="btn_ btn_close" @click="pritnReciept">Print Receipt</ion-button>
                 <ion-button class="btn_ btn_close" @click="goToOrderHistory">Close</ion-button>
             </ion-row>
         </ion-grid>
@@ -51,6 +52,7 @@
 <script>
 import {IonCard, IonCardContent, IonRow, IonButton, IonGrid, IonCol, IonLabel, } from '@ionic/vue'
 import BaseLayout from '../components/BaseLayout.vue'
+import html2canvas from 'html2canvas'
 export default {
   components: { IonCard, IonCardContent, IonRow, IonButton, IonGrid, IonCol, IonLabel, BaseLayout },
   ionViewWillEnter() {
@@ -85,6 +87,18 @@ export default {
             this.adminInfo = data.data
             console.log(this.adminInfo)
         })
+    },
+    pritnReciept() {
+        const screenshoTarget = document.getElementById("table-print")
+        html2canvas(screenshoTarget).then((canvas)=>{
+            const base64image = canvas.toDataURL("img/png");
+            var anchor = document.createElement('a');
+            anchor.setAttribute("href",base64image);
+            anchor.setAttribute("download","image.png");
+            anchor.click()
+            anchor.remove()
+        });
+    
     },
     goToOrderHistory() {
         this.$router.push('/history')
@@ -124,6 +138,8 @@ tr:last-child {
 --border-style: solid;
 --border-color: #000;
 --border-width: 1px;
+--color:white;
+--font-size:15px !important;
 }
 
 .btn_gen_receipt {
@@ -135,7 +151,7 @@ tr:last-child {
 
 .btn_ {
     font-family: 'AbhayaLibre-SemiBold';
-    font-size: 24px;
+    font-size: 17px;
     --border-radius: 30px;
     height: 45px;
     width: 50%;

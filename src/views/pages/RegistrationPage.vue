@@ -37,8 +37,12 @@
                     </ion-col>
                 </ion-row>
                 <ion-row>
+                    <ion-col size="12" class="ion-text-center term-condtion">
+                        <ion-checkbox labelPlacement="end" v-model="term_condition"></ion-checkbox>
+                        <span>I agree to the terms and conditions</span>
+                    </ion-col>
                     <ion-col size="12" class="ion-text-center">
-                        <ion-button @click="registerAccount">Register</ion-button>
+                        <ion-button @click="registerAccount" :disabled="term_condition ? false : true">Register</ion-button>
                     </ion-col>
                     <ion-col size="12" class="ion-text-center">
                         <p @click="logIn"><b style="color:blue">Click here!</b> to Login</p>
@@ -50,15 +54,17 @@
 </template>
 
 <script>
-import {IonPage, IonContent, IonGrid, IonRow, IonCol, IonImg, IonItem, IonLabel, IonInput, IonButton} from '@ionic/vue';
+import {IonPage, IonContent, IonGrid, IonRow, IonCol,IonCheckbox , IonImg, IonItem, IonLabel, IonInput, IonButton} from '@ionic/vue';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 
 export default {
     components: {
         IonPage, 
+        IonCheckbox,
         IonContent, IonGrid, IonRow, IonCol, IonImg, IonItem, IonLabel, IonInput, IonButton
     },
     data:() => ({
+        term_condition : false,
         input: {
             email: '',
             birth_date: '',
@@ -163,4 +169,14 @@ p {
     font-size: 26px;
     letter-spacing: 0;
 }
+.term-condtion {
+    display: flex;
+    margin: auto;
+    padding: 0 24px;
+    gap: 12px;
+    margin: 12px 0;
+}
+.term-condtion span{
+    font-size: 20px !important;
+ }
 </style>

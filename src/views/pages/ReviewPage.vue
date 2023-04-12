@@ -176,16 +176,15 @@ export default {
             .then(a => a.present())
         },
         addOrder(order_details) {
-            console.log(order_details)
             
-            // this.$axios.post('/api/order/addorder', order_details).then(() => {
-            //     this.temp_orders = [];
-            //     this.total = 0;
-            //     this.initialize();
-            //     this.allSelected = false;
-            //     this.$router.push('/receipt')
-            //     this.successNotify("Order created. Waiting for payment");
-            // })
+            this.$axios.post('/api/order/addorder', order_details).then(() => {
+                this.temp_orders = [];
+                this.total = 0;
+                this.initialize();
+                this.allSelected = false;
+                this.$router.push('/receipt')
+                this.successNotify("Order created. Waiting for payment");
+            })
         },
         addToTempOrder(cart){
             if(cart.to_order){
