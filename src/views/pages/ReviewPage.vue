@@ -116,6 +116,7 @@ export default {
         note: '',
         total: 0,
         cnt: 0,
+        btnOrder: false,
     }),
     methods: {
         initialize() {
@@ -168,7 +169,10 @@ export default {
                             note: this.note
                             // cart_order: this.temp_orders
                         }
-                        this.addOrder(thiss.data);
+                        if(!this.btnOrder){
+                            this.addOrder(thiss.data);
+                            this.btnOrder = true;
+                        }
                     },
                 }
             ],

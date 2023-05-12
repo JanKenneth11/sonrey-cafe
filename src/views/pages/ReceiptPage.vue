@@ -2,6 +2,7 @@
     <base-layout>
     <ion-grid class="ion-margin-top">
             <ion-row class="ion-justify-content-center ion-align-items-center">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" id="viewportMeta" />
                 <ion-card id="table-print">
                     <ion-card-content>
                         <table style="width: 100%;" id="table-wrapper-reciept">
@@ -43,7 +44,7 @@
                 </ion-card>
             </ion-row>
             <ion-row class="ion-justify-content-center ion-align-items-center" style="flex-direction:column;">
-                <ion-button class="btn_ btn_close" @click="pritnReciept">Print Receipt</ion-button>
+                <!-- <ion-button class="btn_ btn_close" @click="pritnReciept">Save Receipt</ion-button> -->
                 <ion-button class="btn_ btn_close" @click="goToOrderHistory">Close</ion-button>
             </ion-row>
         </ion-grid>
@@ -90,13 +91,19 @@ export default {
     },
     pritnReciept() {
         const screenshoTarget = document.getElementById("table-print")
-        html2canvas(screenshoTarget).then((canvas)=>{
+        html2canvas(screenshoTarget, 
+        {
+            imageTimeout: 15000, //newline
+            scale:3, //newline
+            windowWidth: '1280px',
+            useCORS: true
+        })
+        .then((canvas)=>{
             const base64image = canvas.toDataURL("img/png");
-            var anchor = document.createElement('a');
-            anchor.setAttribute("href",base64image);
-            anchor.setAttribute("download","image.png");
-            anchor.click()
-            anchor.remove()
+            let a = document.createElement("a");
+            a.href = base64image;
+            a.download = base64image;
+            a.click();
         });
     
     },

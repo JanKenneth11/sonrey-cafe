@@ -1,6 +1,7 @@
 import axios from "axios";
 // import router from "../router";
-const baseURL = "https://sonrey-cafe.thesis-back.online";
+const baseURL = "https://sonrey-cafe.for-testing.online";
+// const baseURL = "https://sonrey-cafe.thesis-back.online";
 
 
 const httpClient = axios.create({

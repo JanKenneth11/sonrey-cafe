@@ -38,8 +38,18 @@
                 </ion-row>
                 <ion-row>
                     <ion-col size="12" class="ion-text-center term-condtion">
+                        <!-- <div>
+                            <span>By using our ordering app, you agree to provide us with accurate and up-to-date contact information, including your name, phone number, email address, and delivery address.</span>
+                            <span>We collect your contact information for the purpose of fulfilling your order, providing customer support, and improving our services.</span>
+                            <span>We may use your contact information to send you marketing communications and promotional offers, but you have the option to opt-out of these communications at any time</span>
+                            <span>We take appropriate measures to protect your contact information from unauthorized access, use, or disclosure. We do not sell or rent your contact information to third parties without your consent, except as required by law or to fulfill your order.</span>
+                        </div> -->
                         <ion-checkbox labelPlacement="end" v-model="term_condition"></ion-checkbox>
-                        <span>I agree to the terms and conditions</span>
+                        <span @click="showTermCondition" link style="color:blue">I agree to the terms and conditions 
+                           
+                        </span>
+                       
+                        
                     </ion-col>
                     <ion-col size="12" class="ion-text-center">
                         <ion-button @click="registerAccount" :disabled="term_condition ? false : true">Register</ion-button>
@@ -54,8 +64,9 @@
 </template>
 
 <script>
-import {IonPage, IonContent, IonGrid, IonRow, IonCol,IonCheckbox , IonImg, IonItem, IonLabel, IonInput, IonButton} from '@ionic/vue';
+import {IonPage, IonContent, IonGrid, IonRow, IonCol,IonCheckbox , IonImg, IonItem, IonLabel, IonInput, IonButton, alertController} from '@ionic/vue';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { eyeOutline} from "ionicons/icons";
 
 export default {
     components: {
@@ -65,6 +76,7 @@ export default {
     },
     data:() => ({
         term_condition : false,
+        eyeOutline,
         input: {
             email: '',
             birth_date: '',
@@ -76,9 +88,53 @@ export default {
             fcm_token: ''
         },
     }),
+    mounted(){
+        this.showTermCondition()
+    },
     methods: {
         logIn() {
             this.$router.push('/login')
+        },
+        showTermCondition(){
+            // const thiss = this
+            return alertController
+            .create({
+            header: 'Terms and condition',
+            message: `
+                <span>- By using our ordering app, you agree to provide us with accurate and up-to-date contact information, including your name, phone number, email address, and delivery address.</span>
+                <br>
+                <br>
+                <span>- We collect your contact information for the purpose of fulfilling your order, providing customer support, and improving our services.</span>
+                <br>
+                <br>
+                <span>- We may use your contact information to send you marketing communications and promotional offers, but you have the option to opt-out of these communications at any time.</span>
+                <br>
+                <br>
+                <span>- We take appropriate measures to protect your contact information from unauthorized access, use, or disclosure. We do not sell or rent your contact information to third parties without your consent, except as required by law or to fulfill your order.</span>
+                <br>  
+                <br>  
+                <span>- By using our ordering app, you acknowledge and agree that we may share your contact information with our third-party service providers, such as payment processors, delivery partners, and customer support providers, to fulfill your order and provide you with a better experience.</span>
+                <br>  
+                <br>  
+                <span>- We reserve the right to modify these terms and conditions at any time, without prior notice. Your continued use of our ordering app after any modifications to these terms and conditions constitutes your acceptance of the modified terms.</span>
+                <br>  
+                <br>  
+                <span>- You may request access to or correction of your contact information that we hold, or withdraw your consent for us to collect, use, or disclose your contact information, by contacting us at the contact information provided in the app.</span>
+                <br>  
+                <br>  
+                <span>- By using our ordering app, you acknowledge and agree to these terms and conditions, as well as our privacy policy, which governs our collection, use, and disclosure of your personal information.</span>
+                <br>  
+                `,
+            buttons: [
+                {
+                    text: 'OK',
+                    handler: () => {
+                        
+                    },
+                }
+            ],
+            })
+            .then(a => a.present())
         },
         async takePhoto(){
             const image = await Camera.getPhoto({

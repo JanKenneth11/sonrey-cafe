@@ -105,7 +105,8 @@ export default {
     splitImage(image) {
         if(image){
             var img = (image || "").split("/")
-            return "https://sonrey-cafe.thesis-back.online/images/" + img[img.length - 1]
+            return "https://sonrey-cafe.for-testing.online/images/" + img[img.length - 1]
+            // return "https://sonrey-cafe.thesis-back.online/images/" + img[img.length - 1]
         }
     },
   },
